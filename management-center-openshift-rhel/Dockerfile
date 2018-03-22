@@ -1,7 +1,7 @@
 FROM registry.access.redhat.com/rhel7
 MAINTAINER Hazelcast, Inc. Integration Team <info@hazelcast.com>
 
-ENV MC_VERSION 3.9.2
+ENV MC_VERSION 3.9.3
 ENV MC_HOME /opt/hazelcast/mancenter
 ENV MANCENTER_DATA /data
 VOLUME ["/data"]
