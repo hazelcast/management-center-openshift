@@ -26,6 +26,9 @@ LABEL name="hazelcast/management-center-openshift-rhel" \
 RUN mkdir -p $MC_HOME
 WORKDIR $MC_HOME
 
+# Add licenses
+ADD licenses /licenses
+
 ### Atomic Help File
 COPY description.md /tmp/
 
