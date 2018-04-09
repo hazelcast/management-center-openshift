@@ -1,4 +1,4 @@
-ARG MC_IMAGE_TAG=3.9.3
+ARG MC_IMAGE_TAG=3.9.4
 
 FROM hazelcast/management-center:${MC_IMAGE_TAG}
 
