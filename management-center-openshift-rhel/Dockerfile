@@ -42,7 +42,7 @@ RUN yum clean all && yum-config-manager --disable \* &> /dev/null && \
     yum -y remove golang-github-cpuguy83-go-md2man && \
     yum -y clean all
 
-ADD http://download.hazelcast.com/management-center/management-center-$MC_VERSION.zip $MC_HOME/mancenter.zip
+ADD http://download.hazelcast.com/management-center/hazelcast-management-center-$MC_VERSION.zip $MC_HOME/mancenter.zip
 RUN unzip mancenter.zip
 ### Start Management Center standalone server.
 COPY start.sh .
