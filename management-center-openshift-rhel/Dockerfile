@@ -1,14 +1,13 @@
 FROM registry.access.redhat.com/rhel7
 MAINTAINER Hazelcast, Inc. Integration Team <info@hazelcast.com>
 
-ENV MC_VERSION 3.10
+ENV MC_VERSION 3.9.4
 ENV MC_HOME /opt/hazelcast/mancenter
 ENV MANCENTER_DATA /data
-VOLUME ["/data"]
-
-ENV LANG en_US.utf8
 ENV USER_NAME=hazelcast
 ENV USER_UID=10001
+
+ENV LANG en_US.utf8
 
 LABEL name="hazelcast/management-center-openshift-rhel" \
       vendor="Hazelcast, Inc." \
@@ -24,6 +23,7 @@ LABEL name="hazelcast/management-center-openshift-rhel" \
       io.openshift.tags="hazelcast,java8,kubernetes,rhel7"
 
 RUN mkdir -p $MC_HOME
+RUN mkdir -p $MANCENTER_DATA
 WORKDIR $MC_HOME
 
 # Add licenses
@@ -42,18 +42,19 @@ RUN yum clean all && yum-config-manager --disable \* &> /dev/null && \
     yum -y remove golang-github-cpuguy83-go-md2man && \
     yum -y clean all
 
-ADD http://download.hazelcast.com/management-center/hazelcast-management-center-$MC_VERSION.zip $MC_HOME/mancenter.zip
+# Prepare Management Center
+ADD http://download.hazelcast.com/management-center/management-center-$MC_VERSION.zip $MC_HOME/mancenter.zip
 RUN unzip mancenter.zip
-### Start Management Center standalone server.
 COPY start.sh .
 RUN chmod a+x start.sh
 
 ### Configure user
 RUN useradd -l -u $USER_UID -r -g 0 -d $MC_HOME -s /sbin/nologin -c "${USER_UID} application user" $USER_NAME
-RUN chown -R $USER_UID:0 $HZ_HOME $MANCENTER_DATA
+RUN chown -R $USER_UID:0 $MC_HOME $MANCENTER_DATA
 RUN chmod +x $MC_HOME/*.sh
 USER $USER_UID
 
+VOLUME ["/data"]
 EXPOSE 8080
 
 CMD ["/bin/sh", "-c", "./start.sh"]
