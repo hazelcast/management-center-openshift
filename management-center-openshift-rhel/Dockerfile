@@ -1,7 +1,7 @@
 FROM registry.access.redhat.com/rhel7
 MAINTAINER Hazelcast, Inc. Integration Team <info@hazelcast.com>
 
-ENV MC_VERSION 3.10
+ENV MC_VERSION 3.9.4
 ENV MC_HOME /opt/hazelcast/mancenter
 ENV MANCENTER_DATA /data
 ENV USER_NAME=hazelcast
@@ -43,7 +43,7 @@ RUN yum clean all && yum-config-manager --disable \* &> /dev/null && \
     yum -y clean all
 
 # Prepare Management Center
-ADD http://download.hazelcast.com/management-center/hazelcast-management-center-$MC_VERSION.zip $MC_HOME/mancenter.zip
+ADD http://download.hazelcast.com/management-center/management-center-$MC_VERSION.zip $MC_HOME/mancenter.zip
 RUN unzip mancenter.zip
 COPY start.sh .
 RUN chmod a+x start.sh
