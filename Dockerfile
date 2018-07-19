@@ -1,7 +1,7 @@
 FROM registry.access.redhat.com/rhel7
 MAINTAINER Hazelcast, Inc. Integration Team <info@hazelcast.com>
 
-ENV MC_VERSION 3.10.1
+ENV MC_VERSION 3.10.2
 ENV MC_HOME /opt/hazelcast/mancenter
 ENV MANCENTER_DATA /data
 ENV USER_NAME=hazelcast
