@@ -1,7 +1,7 @@
-FROM registry.access.redhat.com/rhel7
-MAINTAINER Hazelcast, Inc. Integration Team <info@hazelcast.com>
+FROM registry.access.redhat.com/ubi8/ubi
+MAINTAINER Hazelcast, Inc. Management Center Team <info@hazelcast.com>
 
-ENV MC_VERSION 3.12.8
+ENV MC_VERSION 4.0
 ENV MC_HOME /opt/hazelcast/mancenter
 ENV MANCENTER_DATA /data
 ENV USER_NAME=hazelcast
@@ -11,16 +11,16 @@ ENV LANG en_US.utf8
 
 LABEL name="hazelcast/management-center-openshift-rhel" \
       vendor="Hazelcast, Inc." \
-      version="7.2" \
+      version="8.1" \
       architecture="x86_64" \
       release="${MC_VERSION}" \
       url="http://www.hazelcast.com" \
-      summary="Hazelcast Management Center Openshift Image, certified to RHEL 7" \
+      summary="Hazelcast Management Center Openshift Image, certified to RHEL 8" \
       description="Starts Management Center web application dedicated to monitor and manage Hazelcast nodes" \
       io.k8s.description="Starts Management Center web application dedicated to monitor and manage Hazelcast nodes" \
       io.k8s.display-name="Hazelcast Management Center" \
       io.openshift.expose-services="8080:tcp" \
-      io.openshift.tags="hazelcast,java8,kubernetes,rhel7"
+      io.openshift.tags="hazelcast,java8,kubernetes,rhel8"
 
 RUN mkdir -p $MC_HOME
 RUN mkdir -p $MANCENTER_DATA
@@ -32,15 +32,17 @@ ADD licenses /licenses
 ### Atomic Help File
 COPY description.md /tmp/
 
-RUN yum clean all && yum-config-manager --disable \* &> /dev/null && \
-### Add necessary Red Hat repos here
-    yum-config-manager --enable rhel-7-server-rpms,rhel-7-server-optional-rpms &> /dev/null && \
-    yum -y update-minimal --security --sec-severity=Important --sec-severity=Critical --setopt=tsflags=nodocs && \
+RUN dnf config-manager --disable && \
+    dnf update -y  && rm -rf /var/cache/dnf && \
+    dnf -y update-minimal --security --sec-severity=Important --sec-severity=Critical --setopt=tsflags=nodocs && \
 ### Add your package needs to this installation line
-    yum -y install --setopt=tsflags=nodocs golang-github-cpuguy83-go-md2man java-1.8.0-openjdk-devel unzip && \
+    dnf -y --setopt=tsflags=nodocs install java-1.8.0-openjdk-devel unzip &> /dev/null && \
+### Install go-md2man to help markdown to man conversion
+    dnf -y --setopt=tsflags=nodocs install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm &> /dev/null && \
+    dnf -y --setopt=tsflags=nodocs install golang-github-cpuguy83-go-md2man &> /dev/null && \
     go-md2man -in /tmp/description.md -out /help.1 && \
-    yum -y remove golang-github-cpuguy83-go-md2man && \
-    yum -y clean all
+    dnf -y remove golang-github-cpuguy83-go-md2man && \
+    dnf -y clean all
 
 # Prepare Management Center
 ADD http://download.hazelcast.com/management-center/hazelcast-management-center-$MC_VERSION.zip $MC_HOME/mancenter.zip
