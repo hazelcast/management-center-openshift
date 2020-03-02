@@ -2,12 +2,19 @@ FROM registry.access.redhat.com/ubi8/ubi
 MAINTAINER Hazelcast, Inc. Management Center Team <info@hazelcast.com>
 
 ENV MC_VERSION 4.0
-ENV MC_HOME /opt/hazelcast/mancenter
-ENV MANCENTER_DATA /data
-ENV USER_NAME=hazelcast
-ENV USER_UID=10001
+ENV MC_HOME /opt/hazelcast/management-center
+ENV MC_DATA /data
 
-ENV LANG en_US.utf8
+ENV MC_HTTP_PORT 8080
+ENV MC_HTTPS_PORT 8443
+ENV MC_HEALTH_CHECK_PORT 8081
+ENV MC_CONTEXT_PATH /
+
+ARG MC_INSTALL_NAME="hazelcast-management-center-${MC_VERSION}"
+ARG MC_INSTALL_ZIP="${MC_INSTALL_NAME}.zip"
+ARG MC_INSTALL_WAR="hazelcast-management-center-${MC_VERSION}.war"
+
+ENV MC_RUNTIME "${MC_HOME}/${MC_INSTALL_WAR}"
 
 LABEL name="hazelcast/management-center-openshift-rhel" \
       vendor="Hazelcast, Inc." \
@@ -19,12 +26,13 @@ LABEL name="hazelcast/management-center-openshift-rhel" \
       description="Starts Management Center web application dedicated to monitor and manage Hazelcast nodes" \
       io.k8s.description="Starts Management Center web application dedicated to monitor and manage Hazelcast nodes" \
       io.k8s.display-name="Hazelcast Management Center" \
-      io.openshift.expose-services="8080:tcp" \
-      io.openshift.tags="hazelcast,java8,kubernetes,rhel8"
+      io.openshift.expose-services="8080:http,8081:health_check,8443:https" \
+      io.openshift.tags="hazelcast,java11,kubernetes,rhel8"
 
-RUN mkdir -p $MC_HOME
-RUN mkdir -p $MANCENTER_DATA
-WORKDIR $MC_HOME
+# chmod allows running container as non-root with `docker run --user` option
+RUN mkdir -p ${MC_HOME} ${MC_DATA} \
+ && chmod a+rwx ${MC_HOME} ${MC_DATA}
+WORKDIR ${MC_HOME}
 
 # Add licenses
 ADD licenses /licenses
@@ -36,7 +44,7 @@ RUN dnf config-manager --disable && \
     dnf update -y  && rm -rf /var/cache/dnf && \
     dnf -y update-minimal --security --sec-severity=Important --sec-severity=Critical --setopt=tsflags=nodocs && \
 ### Add your package needs to this installation line
-    dnf -y --setopt=tsflags=nodocs install java-1.8.0-openjdk-devel unzip &> /dev/null && \
+    dnf -y --setopt=tsflags=nodocs install java-11-openjdk wget unzip &> /dev/null && \
 ### Install go-md2man to help markdown to man conversion
     dnf -y --setopt=tsflags=nodocs install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm &> /dev/null && \
     dnf -y --setopt=tsflags=nodocs install golang-github-cpuguy83-go-md2man &> /dev/null && \
@@ -45,18 +53,33 @@ RUN dnf config-manager --disable && \
     dnf -y clean all
 
 # Prepare Management Center
-ADD http://download.hazelcast.com/management-center/hazelcast-management-center-$MC_VERSION.zip $MC_HOME/mancenter.zip
-RUN unzip mancenter.zip
-COPY start.sh .
-RUN chmod a+x start.sh
+RUN wget -O ${MC_HOME}/${MC_INSTALL_ZIP} \
+          http://download.hazelcast.com/management-center/${MC_INSTALL_ZIP} \
+ && unzip ${MC_INSTALL_ZIP} \
+      -x ${MC_INSTALL_NAME}/docs/* \
+ && rm -rf ${MC_INSTALL_ZIP} \
+ && mv ${MC_INSTALL_NAME}/* . \
+ && rm -rf ${MC_INSTALL_NAME}
 
-### Configure user
-RUN useradd -l -u $USER_UID -r -g 0 -d $MC_HOME -s /sbin/nologin -c "${USER_UID} application user" $USER_NAME
-RUN chown -R $USER_UID:0 $MC_HOME $MANCENTER_DATA
-RUN chmod +x $MC_HOME/*.sh
-USER $USER_UID
+# Runtime environment variables
+ENV JAVA_OPTS_DEFAULT "-Dhazelcast.mc.home=${MC_DATA} -Djava.net.preferIPv4Stack=true"
 
-VOLUME ["/data"]
-EXPOSE 8080
+ENV MIN_HEAP_SIZE ""
+ENV MAX_HEAP_SIZE ""
 
-CMD ["/bin/sh", "-c", "./start.sh"]
+ENV JAVA_OPTS ""
+ENV MC_INIT_SCRIPT ""
+ENV MC_INIT_CMD ""
+
+ENV MC_CLASSPATH ""
+
+COPY files/mc-start.sh /mc-start.sh
+RUN chmod +x /mc-start.sh
+
+VOLUME ["${MC_DATA}"]
+EXPOSE ${MC_HTTP_PORT}
+EXPOSE ${MC_HTTPS_PORT}
+EXPOSE ${MC_HEALTH_CHECK_PORT}
+
+# Start Management Center
+CMD ["bash", "/mc-start.sh"]
