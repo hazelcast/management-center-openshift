@@ -19,7 +19,6 @@ ENV MC_RUNTIME "${MC_HOME}/${MC_INSTALL_WAR}"
 LABEL name="hazelcast/management-center-openshift-rhel" \
       vendor="Hazelcast, Inc." \
       version="8.1" \
-      architecture="x86_64" \
       release="${MC_VERSION}" \
       url="http://www.hazelcast.com" \
       summary="Hazelcast Management Center Openshift Image, certified to RHEL 8" \
@@ -38,18 +37,13 @@ WORKDIR ${MC_HOME}
 ADD licenses /licenses
 
 ### Atomic Help File
-COPY description.md /tmp/
+COPY help.1 /help.1
 
 RUN dnf config-manager --disable && \
     dnf update -y  && rm -rf /var/cache/dnf && \
     dnf -y update-minimal --security --sec-severity=Important --sec-severity=Critical --setopt=tsflags=nodocs && \
 ### Add your package needs to this installation line
     dnf -y --setopt=tsflags=nodocs install java-11-openjdk wget unzip &> /dev/null && \
-### Install go-md2man to help markdown to man conversion
-    dnf -y --setopt=tsflags=nodocs install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm &> /dev/null && \
-    dnf -y --setopt=tsflags=nodocs install golang-github-cpuguy83-go-md2man &> /dev/null && \
-    go-md2man -in /tmp/description.md -out /help.1 && \
-    dnf -y remove golang-github-cpuguy83-go-md2man && \
     dnf -y clean all
 
 # Prepare Management Center
