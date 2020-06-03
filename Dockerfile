@@ -23,7 +23,8 @@ LABEL name="hazelcast/management-center-openshift-rhel" \
       io.openshift.tags="hazelcast,java8,kubernetes,rhel7"
 
 RUN mkdir -p $MC_HOME
-RUN mkdir -p $MANCENTER_DATA
+RUN mkdir -p $MANCENTER_DATA \
+    && chmod a+rwx ${MC_HOME} ${MANCENTER_DATA}
 WORKDIR $MC_HOME
 
 # Add licenses
@@ -50,7 +51,6 @@ RUN chmod a+x start.sh
 
 ### Configure user
 RUN useradd -l -u $USER_UID -r -g 0 -d $MC_HOME -s /sbin/nologin -c "${USER_UID} application user" $USER_NAME
-RUN chown -R $USER_UID:0 $MC_HOME $MANCENTER_DATA
 RUN chmod +x $MC_HOME/*.sh
 USER $USER_UID
 
