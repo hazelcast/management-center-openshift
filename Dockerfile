@@ -4,8 +4,6 @@ MAINTAINER Hazelcast, Inc. Integration Team <info@hazelcast.com>
 ENV MC_VERSION 3.12.9
 ENV MC_HOME /opt/hazelcast/mancenter
 ENV MANCENTER_DATA /data
-ENV USER_NAME=hazelcast
-ENV USER_UID=10001
 
 ENV LANG en_US.utf8
 
@@ -22,8 +20,8 @@ LABEL name="hazelcast/management-center-openshift-rhel" \
       io.openshift.expose-services="8080:tcp" \
       io.openshift.tags="hazelcast,java8,kubernetes,rhel7"
 
-RUN mkdir -p $MC_HOME
-RUN mkdir -p $MANCENTER_DATA \
+# chmod allows running container as non-root with `docker run --user` option
+RUN mkdir -p $MC_HOME $MANCENTER_DATA \
     && chmod a+rwx ${MC_HOME} ${MANCENTER_DATA}
 WORKDIR $MC_HOME
 
@@ -48,11 +46,6 @@ ADD http://download.hazelcast.com/management-center/hazelcast-management-center-
 RUN unzip mancenter.zip
 COPY start.sh .
 RUN chmod a+x start.sh
-
-### Configure user
-RUN useradd -l -u $USER_UID -r -g 0 -d $MC_HOME -s /sbin/nologin -c "${USER_UID} application user" $USER_NAME
-RUN chmod +x $MC_HOME/*.sh
-USER $USER_UID
 
 VOLUME ["/data"]
 EXPOSE 8080
