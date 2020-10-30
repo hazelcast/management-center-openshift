@@ -1,7 +1,7 @@
 FROM registry.access.redhat.com/ubi8/ubi
 MAINTAINER Hazelcast, Inc. Management Center Team <info@hazelcast.com>
 
-ENV MC_VERSION 4.2020.08
+ENV MC_VERSION 4.2020.10
 ENV MC_HOME /opt/hazelcast/management-center
 ENV MC_DATA /data
 
