@@ -1,4 +1,3 @@
-#====================================================
 ARG MC_VERSION=4.2020.12
 ARG MC_INSTALL_NAME="hazelcast-management-center-${MC_VERSION}"
 ARG MC_INSTALL_JAR="hazelcast-management-center-${MC_VERSION}.jar"
@@ -83,8 +82,6 @@ RUN dnf config-manager --disable && \
 
 RUN echo "Installing new packages" \
     && dnf -y --setopt=tsflags=nodocs install java-11-openjdk &> /dev/null \
-    && dnf -y clean all \
-    && dnf -y install rocksdb rocksdb-devel \
     && dnf -y clean all \
     && mkdir -p ${MC_HOME} ${MC_DATA} \
     && echo "Granting full access to ${MC_HOME} and ${MC_DATA} to allow running" \
