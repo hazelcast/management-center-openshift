@@ -4,7 +4,7 @@ Hazelcast Management Center enables you to monitor and manage your cluster membe
 
 You can check [Hazelcast IMDG Documentation](http://docs.hazelcast.org/docs/latest/manual/html-single/) and [Management Center Documentation](http://docs.hazelcast.org/docs/management-center/latest/manual/html/index.html) for more information.
 
-**Note**: This repository contains Dockerfile only for the RHEL image available at [Red Hat Container Catalog](https://access.redhat.com/containers/): `registry.connect.redhat.com/hazelcast/management-center-3-rhel7`. For any other OpenShift use cases, please use the standard Docker image: `hazelcast/management-center`.
+**Note**: This repository contains Dockerfile only for the RHEL image available at [Red Hat Container Catalog](https://access.redhat.com/containers/): `registry.connect.redhat.com/hazelcast/management-center-4-rhel8`. For any other OpenShift use cases, please use the standard Docker image: `hazelcast/management-center`.
 
 ## Quick Start
 
