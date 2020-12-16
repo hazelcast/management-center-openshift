@@ -73,20 +73,18 @@ ADD licenses /licenses
 ### Atomic Help File
 COPY help.1 /help.1
 
-RUN dnf config-manager --disable && \
+
+RUN echo "Installing new packages" \
+    dnf config-manager --disable && \
     dnf update -y  && rm -rf /var/cache/dnf && \
     dnf -y update-minimal --security --sec-severity=Important --sec-severity=Critical --setopt=tsflags=nodocs && \
 ### Add your package needs to this installation line
     dnf -y --setopt=tsflags=nodocs install java-11-openjdk wget unzip &> /dev/null && \
-    dnf -y clean all
-
-RUN echo "Installing new packages" \
-    && dnf -y --setopt=tsflags=nodocs install java-11-openjdk &> /dev/null \
-    && dnf -y clean all \
-    && mkdir -p ${MC_HOME} ${MC_DATA} \
-    && echo "Granting full access to ${MC_HOME} and ${MC_DATA} to allow running" \
-        "container as non-root with \"docker run --user\" option" \
-    && chmod a+rwx ${MC_HOME} ${MC_DATA}
+    dnf -y clean all && \
+    mkdir -p ${MC_HOME} ${MC_DATA} && \
+    echo "Granting full access to ${MC_HOME} and ${MC_DATA} to allow running" \
+            "container as non-root with \"docker run --user\" option" && \
+    chmod a+rwx ${MC_HOME} ${MC_DATA}
 
 WORKDIR ${MC_HOME}
 
