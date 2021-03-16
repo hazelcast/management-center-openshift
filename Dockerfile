@@ -36,7 +36,7 @@ RUN yum clean all && yum-config-manager --disable \* &> /dev/null && \
     yum-config-manager --enable rhel-7-server-rpms,rhel-7-server-optional-rpms &> /dev/null && \
     yum -y update-minimal --security --sec-severity=Important --sec-severity=Critical --setopt=tsflags=nodocs && \
 ### Add your package needs to this installation line
-    yum -y install --setopt=tsflags=nodocs golang-github-cpuguy83-go-md2man java-1.8.0-openjdk-devel unzip && \
+    yum -y install --setopt=tsflags=nodocs golang-github-cpuguy83-go-md2man java-1.8.0-openjdk-headless unzip && \
     go-md2man -in /tmp/description.md -out /help.1 && \
     yum -y remove golang-github-cpuguy83-go-md2man && \
     yum -y clean all
