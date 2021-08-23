@@ -24,6 +24,7 @@ jobs:
       MC_RHEL_REPOSITORY: ${{ secrets.MC_RHEL_REPOSITORY }}
       RHEL_API_KEY:  ${{ secrets.RHEL_API_KEY }}
 
+
     runs-on: ubuntu-latest
     steps: 
       - name: Checkout Code
