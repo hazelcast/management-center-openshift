@@ -1,6 +1,7 @@
 name: Build and publish Management Center RHEL image
 
 on:
+  pull_request:
   push:
     tags:
       - "v4.*"
