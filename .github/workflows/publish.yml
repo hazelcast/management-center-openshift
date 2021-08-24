@@ -39,7 +39,7 @@ jobs:
       - name: Build the Management Center image
         run: |
           docker build \
-                --build-arg MC_VERSION=${MC_VERSION} \
+                --build-arg MC_VERSION=${RELEASE_VERSION} \
                 --tag ${RHEL_IMAGE} .
 
       - name: Log in to RedHat Scan Registry and push the image
