@@ -67,7 +67,7 @@ RUN dnf config-manager --disable && \
 
 # Prepare Management Center
 RUN wget -O ${MC_HOME}/${MC_INSTALL_ZIP} \
-          http://download.hazelcast.com/management-center/${MC_INSTALL_ZIP} \
+          https://hazelcast.jfrog.io/artifactory/download/management-center/${MC_INSTALL_ZIP} \
  && unzip ${MC_INSTALL_ZIP} \
       -x ${MC_INSTALL_NAME}/docs/* \
  && rm -rf ${MC_INSTALL_ZIP} \
