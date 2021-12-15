@@ -1,9 +1,9 @@
-name: Build and publish Management Center RHEL image
+name: Build and publish Management Center 4.X RHEL image
 
 on:
   push:
     tags:
-      - "v5.*"
+      - "v4.*"
 
 jobs:
   build:
