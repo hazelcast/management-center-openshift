@@ -86,6 +86,9 @@ ENV MC_INIT_CMD ""
 
 ENV MC_CLASSPATH ""
 
+COPY files/mc-start.sh ./bin/mc-start.sh
+RUN chmod +x ./bin/mc-start.sh
+
 VOLUME ["${MC_DATA}"]
 EXPOSE ${MC_HTTP_PORT} ${MC_HTTPS_PORT} ${MC_HEALTH_CHECK_PORT}
 
@@ -99,6 +102,4 @@ RUN echo "Adding non-root user" \
 USER ${USER_UID}
 
 # Start Management Center
-CMD ["bash", "-c" , "./bin/hz-mc start -Dhazelcast.mc.contextPath=${MC_CONTEXT_PATH} \
-                                          -Dhazelcast.mc.http.port=${MC_HTTP_PORT} \
-                                          -Dhazelcast.mc.https.port=${MC_HTTPS_PORT}"]
+CMD ["bash", "./bin/mc-start.sh"]
