@@ -45,7 +45,7 @@ LABEL name="hazelcast/management-center-openshift-rhel" \
       io.k8s.description="Starts Management Center web application dedicated to monitor and manage Hazelcast nodes" \
       io.k8s.display-name="Hazelcast Management Center" \
       io.openshift.expose-services="8080:http,8081:health_check,8443:https" \
-      io.openshift.tags="hazelcast,java11,kubernetes,rhel8"
+      io.openshift.tags="hazelcast,java17,kubernetes,rhel8"
 
 # chmod allows running container as non-root with `docker run --user` option
 RUN mkdir -p ${MC_HOME} ${MC_DATA} \
@@ -62,14 +62,12 @@ RUN dnf config-manager --disable && \
     dnf update -y  && rm -rf /var/cache/dnf && \
     dnf -y update-minimal --security --sec-severity=Important --sec-severity=Critical --setopt=tsflags=nodocs && \
 ### Add your package needs to this installation line
-    dnf -y --setopt=tsflags=nodocs install java-11-openjdk wget unzip &> /dev/null && \
+    dnf -y --setopt=tsflags=nodocs install java-17-openjdk wget unzip &> /dev/null && \
     dnf -y clean all
 
 # Prepare Management Center
-RUN wget -O ${MC_HOME}/${MC_INSTALL_ZIP} \
-          https://hazelcast.jfrog.io/artifactory/download/management-center/${MC_INSTALL_ZIP} \
+RUN wget -O ${MC_HOME}/${MC_INSTALL_ZIP} https://repository.hazelcast.com/download/management-center/${MC_INSTALL_ZIP} \
  && unzip ${MC_INSTALL_ZIP} \
-      -x ${MC_INSTALL_NAME}/docs/* \
  && rm -rf ${MC_INSTALL_ZIP} \
  && mv ${MC_INSTALL_NAME}/* . \
  && rm -rf ${MC_INSTALL_NAME}
