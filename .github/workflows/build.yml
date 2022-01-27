@@ -1,0 +1,19 @@
+name: Build docker image
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build the Management Center image
+        run: docker build --tag management-center:ci-build .

@@ -17,7 +17,7 @@ jobs:
       MC_RHEL_REPOSITORY: ${{ secrets.MC_4_RHEL_REPOSITORY }}
       RHEL_API_KEY:  ${{ secrets.RHEL_API_KEY }}
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps: 
       - name: Checkout Code
         uses: actions/checkout@v2
