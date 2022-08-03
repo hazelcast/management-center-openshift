@@ -58,7 +58,7 @@ ADD licenses /licenses
 ### Atomic Help File
 COPY help.1 /help.1
 
-RUN microdnf update --nodocs  && rm -rf /var/cache/dnf && \
+RUN microdnf upgrade --nodocs  && rm -rf /var/cache/microdnf && \
 ### Add your package needs to this installation line
     microdnf -y --nodocs install java-17-openjdk wget unzip shadow-utils &> /dev/null && \
     microdnf -y clean all
