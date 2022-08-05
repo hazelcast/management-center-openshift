@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/ubi
+FROM redhat/ubi8-minimal:8.6
 MAINTAINER Hazelcast, Inc. Management Center Team <info@hazelcast.com>
 
 ARG MC_VERSION=5.1.4
@@ -58,12 +58,10 @@ ADD licenses /licenses
 ### Atomic Help File
 COPY help.1 /help.1
 
-RUN dnf config-manager --disable && \
-    dnf update -y  && rm -rf /var/cache/dnf && \
-    dnf -y update-minimal --security --sec-severity=Important --sec-severity=Critical --setopt=tsflags=nodocs && \
+RUN microdnf upgrade --nodocs  && rm -rf /var/cache/microdnf && \
 ### Add your package needs to this installation line
-    dnf -y --setopt=tsflags=nodocs install java-17-openjdk wget unzip &> /dev/null && \
-    dnf -y clean all
+    microdnf -y --nodocs install java-17-openjdk wget unzip shadow-utils &> /dev/null && \
+    microdnf -y clean all
 
 # Prepare Management Center
 RUN wget -O ${MC_HOME}/${MC_INSTALL_ZIP} https://repository.hazelcast.com/download/management-center/${MC_INSTALL_ZIP} \
