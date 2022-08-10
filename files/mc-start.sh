@@ -2,6 +2,6 @@
 
 set -euo pipefail
 
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 
-./hz-mc start "$@"
+exec ./bin/hz-mc start "$@"

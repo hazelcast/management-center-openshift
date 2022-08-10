@@ -64,8 +64,13 @@ RUN microdnf upgrade --nodocs  && rm -rf /var/cache/microdnf && \
     microdnf -y clean all
 
 # Prepare Management Center
-RUN wget -O ${MC_HOME}/${MC_INSTALL_ZIP} https://repository.hazelcast.com/download/management-center/${MC_INSTALL_ZIP} \
- && unzip ${MC_INSTALL_ZIP} \
+
+# Comment out the following RUN command to build from a local zip artifact
+RUN wget -O ${MC_HOME}/${MC_INSTALL_ZIP} https://repository.hazelcast.com/download/management-center/${MC_INSTALL_ZIP}
+# ...and uncomment the line below
+#COPY ${MC_INSTALL_ZIP} ${MC_HOME}
+
+RUN  unzip ${MC_INSTALL_ZIP} \
  && rm -rf ${MC_INSTALL_ZIP} \
  && mv ${MC_INSTALL_NAME}/* . \
  && rm -rf ${MC_INSTALL_NAME}
