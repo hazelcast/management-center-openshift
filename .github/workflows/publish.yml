@@ -11,7 +11,7 @@ jobs:
       run:
         shell: bash
     env:
-      SCAN_REGISTRY: "scan.connect.redhat.com"
+      SCAN_REGISTRY: "quay.io"
       TIMEOUT_IN_MINS: 120
       MC_RHEL_REPO_PASSWORD: ${{ secrets.MC_RHEL_REPO_PASSWORD }}
       MC_RHEL_REPOSITORY: ${{ secrets.MC_RHEL_REPOSITORY }}
