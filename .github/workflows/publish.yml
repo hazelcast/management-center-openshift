@@ -14,6 +14,7 @@ jobs:
       SCAN_REGISTRY: "quay.io"
       SCAN_REGISTRY_USER: ${{ secrets.SCAN_REGISTRY_USER }}
       SCAN_REGISTRY_PASSWORD: ${{ secrets.SCAN_REGISTRY_PASSWORD }}
+      MC_RHEL_REPOSITORY: ${{ secrets.MC_RHEL_REPOSITORY }}
       TIMEOUT_IN_MINS: 120
       RHEL_API_KEY:  ${{ secrets.RHEL_API_KEY }}
 
