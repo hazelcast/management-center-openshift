@@ -41,7 +41,7 @@ jobs:
       - name: Log in to RedHat Scan Registry and push the image
         run: |
           docker login ${SCAN_REGISTRY} -u ${SCAN_REGISTRY_USER} -p ${SCAN_REGISTRY_PASSWORD}
-          docker push --all-tags ${RHEL_IMAGE}
+          docker image push ${RHEL_IMAGE} --all-tags
 
       - name: Install preflight tool
         run: |
