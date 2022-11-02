@@ -3,7 +3,7 @@
 get_image()
 {
     local PUBLISHED=$1
-    local ID=$2
+    local PROJECT_ID=$2
     local VERSION=$3
     local RHEL_API_KEY=$4
 
