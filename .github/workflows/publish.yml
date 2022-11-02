@@ -16,7 +16,6 @@ jobs:
       SCAN_REGISTRY_PASSWORD: ${{ secrets.SCAN_REGISTRY_PASSWORD }}
       MC_RHEL_REPOSITORY: ${{ secrets.MC_RHEL_REPOSITORY }}
       TIMEOUT_IN_MINS: 120
-      PROJECT_ID: 6149b025cae4ca49b6624659
       RHEL_API_KEY:  ${{ secrets.RHEL_API_KEY }}
 
     runs-on: ubuntu-20.04
@@ -28,7 +27,7 @@ jobs:
         run: |
           RELEASE_VERSION=${GITHUB_REF:11}
           echo "RELEASE_VERSION=${RELEASE_VERSION}" >> $GITHUB_ENV
-          SCAN_REPOSITORY=quay.io/redhat-isv-containers/${PROJECT_ID}
+          SCAN_REPOSITORY=quay.io/redhat-isv-containers/${RHEL_PROJECT_ID}
           echo "SCAN_REPOSITORY=${SCAN_REPOSITORY}" >> $GITHUB_ENV
           echo "RHEL_IMAGE=${MC_RHEL_REPOSITORY}:${RELEASE_VERSION}" >> $GITHUB_ENV
           
@@ -36,13 +35,12 @@ jobs:
         run: |
           docker build \
                 --build-arg MC_VERSION=${RELEASE_VERSION} \
-                --tag ${RHEL_IMAGE} --tag ${MC_RHEL_REPOSITORY}:latest .
+                --tag ${RHEL_IMAGE} .
 
       - name: Log in to RedHat Scan Registry and push the image
         run: |
           docker login ${SCAN_REGISTRY} -u ${SCAN_REGISTRY_USER} -p ${SCAN_REGISTRY_PASSWORD}
           docker push ${RHEL_IMAGE}
-          docker push ${MC_RHEL_REPOSITORY}:latest
 
       - name: Install preflight tool
         run: |
@@ -54,7 +52,7 @@ jobs:
         run: |
           ./preflight-linux-amd64 check container ${RHEL_IMAGE} \
           --submit --pyxis-api-token=${RHEL_API_KEY} \
-          --certification-project-id=$PROJECT_ID \
+          --certification-project-id=$RHEL_PROJECT_ID \
           --docker-config ~/.docker/config.json
 
       - name: Wait for scan to complete
@@ -62,12 +60,12 @@ jobs:
           VERSION=${RELEASE_VERSION}
           source .github/scripts/publish-rhel.sh
 
-          wait_for_container_scan "$PROJECT_ID" "$VERSION" "$RHEL_API_KEY" "$TIMEOUT_IN_MINS"
+          wait_for_container_scan "$RHEL_PROJECT_ID" "$VERSION" "$RHEL_API_KEY" "$TIMEOUT_IN_MINS"
 
       - name: Publish the Management Center image
         run: |
           VERSION=${RELEASE_VERSION}
           source .github/scripts/publish-rhel.sh
 
-          publish_the_image "$PROJECT_ID" "$VERSION" "$RHEL_API_KEY"
-          wait_for_container_publish "$PROJECT_ID" "$VERSION" "$RHEL_API_KEY" "$TIMEOUT_IN_MINS"
+          publish_the_image "$RHEL_PROJECT_ID" "$VERSION" "$RHEL_API_KEY"
+          wait_for_container_publish "$RHEL_PROJECT_ID" "$VERSION" "$RHEL_API_KEY" "$TIMEOUT_IN_MINS"
