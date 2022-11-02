@@ -117,7 +117,9 @@ wait_for_container_publish()
     # Wait until the image is published
     for i in `seq 1 ${NOF_RETRIES}`; do
 
-        echo "get image response" $(get_image published "${RHEL_PROJECT_ID}" "${VERSION}" "${RHEL_API_KEY}")
+        local GET_IMAGE_RESPONSE=$(get_image published "${RHEL_PROJECT_ID}" "${VERSION}" "${RHEL_API_KEY}")
+        echo "get image response"
+        echo $GET_IMAGE_RESPONSE
         local IS_PUBLISHED=$(get_image published "${RHEL_PROJECT_ID}" "${VERSION}" "${RHEL_API_KEY}" | jq -r '.total')
 
         if [[ $IS_PUBLISHED == "1" ]]; then
