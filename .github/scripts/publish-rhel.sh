@@ -121,7 +121,8 @@ wait_for_container_publish()
         echo "get image response"
         echo $GET_IMAGE_RESPONSE
         local IS_PUBLISHED=$(get_image published "${RHEL_PROJECT_ID}" "${VERSION}" "${RHEL_API_KEY}" | jq -r '.total')
-
+        echo "is published"
+        echo  $IS_PUBLISHED
         if [[ $IS_PUBLISHED == "1" ]]; then
             echo "Image is published, exiting."
             return 0
