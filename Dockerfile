@@ -1,4 +1,4 @@
-FROM redhat/ubi8-minimal:8.6
+FROM redhat/ubi8-minimal:8.8
 MAINTAINER Hazelcast, Inc. Management Center Team <info@hazelcast.com>
 
 ARG MC_VERSION=5.3.2
