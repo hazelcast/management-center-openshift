@@ -1,7 +1,7 @@
 FROM redhat/ubi8-minimal:8.6
 MAINTAINER Hazelcast, Inc. Management Center Team <info@hazelcast.com>
 
-ARG MC_VERSION=5.3.1
+ARG MC_VERSION=5.3.2
 
 ENV MC_HOME /opt/hazelcast/management-center
 ENV MC_DATA /data
